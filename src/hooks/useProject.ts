@@ -69,7 +69,7 @@ export const usePatchProjectStatus = () => {
   const { mutate, status, error } = useMutation({
     mutationKey: [`patch-project-status`],
     mutationFn: ({ id, status }: ProjectStatus) =>
-      patchProjectStatus(Number(id), status),
+      patchProjectStatus(Number(id), status as any),
 
     onSuccess: () => {
       Toast.success("Project status updated successfully");

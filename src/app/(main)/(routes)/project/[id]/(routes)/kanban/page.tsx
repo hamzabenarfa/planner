@@ -19,10 +19,10 @@ import {
 import { SortableContext, arrayMove } from "@dnd-kit/sortable";
 import { createPortal } from "react-dom";
 import TaskCard from "./_components/(task)/TaskCard";
-import api from "@/lib/axios-instance";
 import { useParams } from "next/navigation";
 import KanbanNavbar from "./_components/kanban-navbar";
 import { useGetAllMyColumn } from "@/hooks/useColumn";
+import { createTask as createTaskAction, moveTaskToColumn as moveTaskToColumnAction } from "@/actions/task";
 
 function KanbanBoard() {
   const projectId = useParams();
@@ -34,8 +34,8 @@ function KanbanBoard() {
 
   useEffect(() => {
     if (columnData) {
-      setColumns(columnData?.data);
-      const allTasks = columnData?.data.map((column) => column.tasks || []).flat();
+      setColumns(columnData as any);
+      const allTasks = (columnData as any).map((column: any) => column.tasks || []).flat();
       setTasks(allTasks);
     }
   }, [columnData]);
@@ -108,16 +108,14 @@ function KanbanBoard() {
 
   async function createTask(columnId: Id) {
     try {
-      const response = await api<Task>({
-        url: "/tasks",
-        method: "POST",
-        data: { name: `Task ${tasks.length + 1}`, columnId },
-      });
-      const data = response.data;
+      const newTaskData = { name: `Task ${tasks.length + 1}`, columnId: Number(columnId) };
+      const createdTask = await createTaskAction(newTaskData);
+      
       const newTask: Task = {
-        id: response.data.id,
-        columnId,
-        name: response.data.name,
+        id: createdTask.id,
+        columnId: Number(columnId),
+        name: createdTask.name,
+        description: createdTask.description || "",
       };
 
       setTasks([...tasks, newTask]);
@@ -199,7 +197,7 @@ function KanbanBoard() {
     if (isActiveATask && isOverAColumn) {
       setTasks((tasks) => {
         const activeIndex = tasks.findIndex((t) => t.id === activeId);
-        tasks[activeIndex].columnId = overId;
+        tasks[activeIndex].columnId = Number(overId);
         moveTaskToColumn(activeId, overId);
         return arrayMove(tasks, activeIndex, activeIndex);
       });
@@ -211,10 +209,7 @@ function KanbanBoard() {
     columnId: UniqueIdentifier
   ) {
     try {
-      const response = await api({
-        url: `/tasks/${taskId}/${columnId}`,
-        method: "PUT",
-      });
+      await moveTaskToColumnAction(Number(taskId), Number(columnId));
     } catch (error) {
       console.error("Error:", error);
     }

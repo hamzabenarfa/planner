@@ -269,3 +269,12 @@ export async function getBurnDownChart(projectId: number) {
     done,
   };
 }
+
+export async function getProjectMembers(projectId: number) {
+  const userId = await authenticatedUser();
+  // Ensure user has access to project if needed
+  return await prisma.projectMember.findMany({
+    where: { projectId },
+    include: { user: true },
+  });
+}

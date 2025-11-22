@@ -11,7 +11,7 @@ export type ProjectType = {
   completedTasks: number;
   createdAt?: Date;
   updatedAt: Date;
-  ownerId?: number;
+  ownerId?: number | null;
 };
 
 export interface PatchProjectName {
