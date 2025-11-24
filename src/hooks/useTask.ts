@@ -20,9 +20,6 @@ export const useCreateTask = () => {
       }
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks"] });
-    },
     onError: (error: any) => {
       console.log(error);
     }

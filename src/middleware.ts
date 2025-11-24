@@ -1,17 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
-
-export function middleware(request: NextRequest) {
-  const cookieStore = request.cookies;
-  const refreshToken = cookieStore.get("refresh_token");
-  const accessToken = cookieStore.get("access_token");
-
-  if (!refreshToken) {
-    return NextResponse.redirect(new URL('/login', request.url))
-  }
-
-  return NextResponse.next();
-}
+export { auth as middleware } from "@/auth";
 
 export const config = {
-  matcher: ['/planner/:path*'], 
-}
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"],
+};

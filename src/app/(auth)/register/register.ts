@@ -1,9 +1,9 @@
 "use server";
 import prisma from "@/lib/prisma";
-import * as argon from "argon2";
+import bcrypt from "bcryptjs";
 import { Role } from "@prisma/client";
 
-export async function register(email: string, password: string, role: string) {
+export async function register(email: string, password: string) {
   try {
     const existingUser = await prisma.user.findUnique({
       where: { email },
@@ -13,12 +13,12 @@ export async function register(email: string, password: string, role: string) {
       return { data: null, roleUser: null, error: "User already exists" };
     }
 
-    const hash = await argon.hash(password);
+    const hash = await bcrypt.hash(password, 10);
     const user = await prisma.user.create({
       data: {
         email,
         hash,
-        role: role as Role,
+        role: Role.MANAGER,
       },
     });
 

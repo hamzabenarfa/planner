@@ -22,3 +22,13 @@ export async function getMyTeam() {
     where: { ownerId: userId },
   });
 }
+
+export async function getMyTeamMembers() {
+  const userId = await authenticatedUser();
+  const team = await prisma.team.findFirst({ where: { ownerId: userId } });
+  if (!team) return [];
+  return await prisma.teamMember.findMany({
+    where: { teamId: team.id },
+    include: { user: true },
+  });
+}

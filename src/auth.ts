@@ -1,17 +1,30 @@
+import "server-only";
 import NextAuth from "next-auth"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import prisma from "@/lib/prisma"
 import Credentials from "next-auth/providers/credentials"
 import Google from "next-auth/providers/google"
-import argon2 from "argon2"
+import bcrypt from "bcryptjs"
 import { z } from "zod"
 import { Role } from "@prisma/client"
 
+
+console.log("Auth Secret:", process.env.AUTH_SECRET ? "Set" : "Not Set");
+console.log("Google Client ID:", process.env.GOOGLE_CLIENT_ID ? "Set" : "Not Set");
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  secret: process.env.AUTH_SECRET,
   adapter: PrismaAdapter(prisma) as any,
   session: { strategy: "jwt" },
+  pages: {
+    signIn: "/login",
+    error: "/login",
+  },
   providers: [
-    Google,
+    Google({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
     Credentials({
       name: "Credentials",
       credentials: {
@@ -28,7 +41,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           const user = await prisma.user.findUnique({ where: { email } });
           if (!user || !user.hash) return null;
 
-          const passwordsMatch = await argon2.verify(user.hash, password);
+          const passwordsMatch = await bcrypt.compare(password, user.hash);
           if (passwordsMatch) {
             return {
               ...user,
@@ -42,7 +55,29 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async authorized({ auth, request: { nextUrl } }) {
+      const isLoggedIn = !!auth?.user;
+      const { pathname } = nextUrl;
+
+      // Public routes
+      const isPublicRoute = 
+        pathname === "/" || 
+        pathname === "/login" || 
+        pathname === "/register";
+
+      // If trying to access protected route without auth, deny (will redirect to login)
+      if (!isPublicRoute && !isLoggedIn) {
+        return false;
+      }
+
+      // If logged in and trying to access auth pages, redirect to project
+      if (isLoggedIn && (pathname === "/login" || pathname === "/register")) {
+        return Response.redirect(new URL("/project", nextUrl));
+      }
+
+      return true;
+    },
+    async jwt({ token, user, account }) {
       if (user) {
         token.id = user.id;
         token.role = user.role;
@@ -55,6 +90,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         session.user.role = token.role as Role;
       }
       return session;
+    },
+    async redirect({ url, baseUrl }) {
+      // Redirect to /project after successful login
+      if (url.startsWith(baseUrl)) return url;
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      return baseUrl + "/project";
     },
   },
 })

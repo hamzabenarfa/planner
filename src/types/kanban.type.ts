@@ -1,4 +1,5 @@
 import { Task } from "./task.type";
+export type { Task };
 
 export type Id = number | string;
 

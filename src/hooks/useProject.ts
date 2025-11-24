@@ -48,18 +48,33 @@ export const usePinProject = () => {
 };
 
 export const useDeleteProject = () => {
+  const queryClient = useQueryClient();
   const { mutate, status, error } = useMutation({
     mutationKey: [`delete-project`],
     mutationFn: (id: Id) => deleteProject(Number(id)),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+    },
+    onError: (error) => {
+      console.error("Delete project error:", error);
+    },
   });
   return { deleteProject: mutate, status, error };
 };
 
 export const usePatchProjectName = () => {
+  const queryClient = useQueryClient();
   const { mutate, status, error } = useMutation({
     mutationKey: [`patch-project-name`],
     mutationFn: ({ id, name }: PatchProjectName) =>
       patchProjectName(Number(id), name),
+    onSuccess: () => {
+      Toast.success("Project name updated successfully");
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+    },
+    onError: (error: any) => {
+      Toast.error(error.message || "Failed to update project name");
+    },
   });
   return { patchProjectName: mutate, status, error };
 };
@@ -74,7 +89,7 @@ export const usePatchProjectStatus = () => {
     onSuccess: () => {
       Toast.success("Project status updated successfully");
       queryClient.invalidateQueries({
-        queryKey: ["projects", "patch-project-status"],
+        queryKey: ["projects"],
       });
     },
     onError: (error: any) => {

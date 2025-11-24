@@ -14,21 +14,26 @@ export async function getAllColumns(projectId: number) {
 }
 
 export async function getEachColumn(columnId: number) {
-  return await prisma.column.findMany({
+  return await prisma.column.findUnique({
     where: { id: columnId },
     include: { tasks: true },
   });
 }
 
-export async function createColumn(dto: { name: string; projectId: number }) {
-  // Backend implementation was commented out, but let's implement it if needed.
-  // Based on controller, it seems it might be used.
-  // But backend service had it commented out. 
-  // I'll skip implementation if it was commented out in backend, 
-  // or implement basic version if frontend calls it.
-  // Frontend service calls it? Let's check frontend service later if needed.
-  // For now, implementing basic create if needed.
-  return;
+export async function createColumn(dto: { name: string; projectId: number; columnType?: string }) {
+  const kanban = await prisma.kanban.findFirst({
+    where: { projectId: dto.projectId },
+  });
+  if (!kanban) throw new Error("Kanban not found for this project");
+
+  return await prisma.column.create({
+    data: {
+      name: dto.name,
+      kanbanId: kanban.id,
+      columnType: (dto.columnType || "TODO") as any,
+      done: dto.name.toLowerCase() === "done",
+    },
+  });
 }
 
 export async function updateColumnName(columnId: number, name: string) {

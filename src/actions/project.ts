@@ -278,3 +278,34 @@ export async function getProjectMembers(projectId: number) {
     include: { user: true },
   });
 }
+
+export async function addProjectMember(memberId: number, projectId: number) {
+  // memberId here is the TeamMember ID or User ID?
+  // Based on select-member.tsx, value is member.id (TeamMember ID).
+  // We need to get the User ID from TeamMember.
+  const teamMember = await prisma.teamMember.findUnique({
+    where: { id: memberId },
+  });
+  if (!teamMember) throw new Error("Team member not found");
+
+  const existing = await prisma.projectMember.findFirst({
+    where: {
+      projectId,
+      userId: teamMember.userId,
+    },
+  });
+  if (existing) throw new Error("Member already in project");
+
+  return await prisma.projectMember.create({
+    data: {
+      projectId,
+      userId: teamMember.userId,
+    },
+  });
+}
+
+export async function removeProjectMember(projectMemberId: number) {
+  return await prisma.projectMember.delete({
+    where: { id: projectMemberId },
+  });
+}
