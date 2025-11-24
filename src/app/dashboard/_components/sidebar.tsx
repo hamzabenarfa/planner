@@ -34,7 +34,7 @@ const routes = [
     href: "/dashboard/calendar",
   },
   {
-    label: "Employees",
+    label: "Members",
     icon: Users,
     href: "/dashboard/employees",
   },
@@ -72,15 +72,15 @@ export const Sidebar = () => {
           ))}
         </div>
       </div>
-      
+
       <div className="mt-auto px-4 pb-4">
-     
+
 
         <div className="flex items-center gap-x-2 px-2">
-             <Button variant="ghost" className="w-full justify-start text-slate-500 hover:text-slate-600 gap-2 pl-0 hover:bg-transparent">
-                <LogOut className="h-5 w-5" />
-                Logout
-             </Button>
+          <Button variant="ghost" className="w-full justify-start text-slate-500 hover:text-slate-600 gap-2 pl-0 hover:bg-transparent">
+            <LogOut className="h-5 w-5" />
+            Logout
+          </Button>
         </div>
       </div>
     </div>

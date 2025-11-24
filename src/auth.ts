@@ -72,7 +72,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
       // If logged in and trying to access auth pages, redirect to project
       if (isLoggedIn && (pathname === "/login" || pathname === "/register")) {
-        return Response.redirect(new URL("/project", nextUrl));
+        return Response.redirect(new URL("/dashboard/projects", nextUrl));
       }
 
       return true;

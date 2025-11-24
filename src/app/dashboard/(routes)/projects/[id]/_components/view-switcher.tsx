@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { CalendarClock, Kanban, List } from "lucide-react";
+import { CalendarClock, Kanban, List, Workflow } from "lucide-react";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
@@ -26,6 +26,11 @@ export const ViewSwitcher = () => {
             name: "Calendar",
             icon: CalendarClock,
             path: `/dashboard/projects/${projectId}/calendar`,
+        },
+        {
+            name: "Diagrams",
+            icon: Workflow,
+            path: `/dashboard/projects/${projectId}/diagrams`,
         },
     ];
 

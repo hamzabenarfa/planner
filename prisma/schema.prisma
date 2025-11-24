@@ -75,6 +75,7 @@ model Project {
 
   kanban           Kanban?
   BurnDownSnapshot BurnDownSnapshot[]
+  diagrams         Diagram[]
 
   @@unique([name, ownerId])
   @@map("projects")
@@ -248,4 +249,17 @@ model VerificationToken {
 
   @@unique([identifier, token])
   @@map("verification_tokens")
+}
+
+model Diagram {
+  id        Int      @id @default(autoincrement())
+  name      String
+  content   String   @db.LongText
+  projectId Int
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([name, projectId])
+  @@map("diagrams")
 }
