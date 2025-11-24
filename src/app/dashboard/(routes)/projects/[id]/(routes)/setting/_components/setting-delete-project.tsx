@@ -1,19 +1,10 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+
 import SettingCard from "./setting-card";
 import { useDeleteProject } from "@/hooks/useProject";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 
 const ProjectDeleteSetting = ({ id }: { id: number }) => {
 
@@ -23,7 +14,7 @@ const ProjectDeleteSetting = ({ id }: { id: number }) => {
   const handleDelete = (id: number) => {
     deleteProject(id, {
       onSuccess: () => {
-        router.push("/project");
+        router.push("/dashboard/projects");
       },
     });
   };
@@ -40,7 +31,7 @@ const ProjectDeleteSetting = ({ id }: { id: number }) => {
         >
           Delete Project
         </Button>
- 
+
       </div>
     </SettingCard>
   );

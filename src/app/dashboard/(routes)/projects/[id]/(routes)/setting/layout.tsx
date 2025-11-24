@@ -16,21 +16,21 @@ const SettingLayout = ({
   const examples = [
     {
       name: "General",
-      href: `/project/${projectId}/setting`,
+      href: `/dashboard/projects/${projectId}/setting`,
     },
     {
       name: "Team",
-      href: `/project/${projectId}/setting/team`,
+      href: `/dashboard/projects/${projectId}/setting/team`,
     },
     {
-      name: "Team Members",
-      href: `/project/${projectId}/setting/team-members`,
+      name: "Members",
+      href: `/dashboard/projects/${projectId}/setting/team-members`,
     },
   ];
 
   const pathname = usePathname();
   return (
-    <div className="flex flex-col gap-4 min-h-screen w-full p-4">
+    <div className="flex flex-col gap-4 h-full w-full p-4">
       <h1 className="text-4xl font-bold">Project Settings</h1>
       <Separator />
 
@@ -38,24 +38,26 @@ const SettingLayout = ({
         <ScrollArea className="max-w-[600px] lg:max-w-none">
           <div className={cn("mb-4 flex items-center")}>
             {examples.map((example, index) => (
-                   <Link
-                   href={example.href}
-                   key={example.href}
-                   className={cn(
-                     "flex h-7 items-center justify-center rounded-full px-4 text-center text-sm transition-colors hover:text-primary",
-                     pathname === example.href
-                       ? "bg-muted font-medium text-primary"
-                       : "text-muted-foreground"
-                   )}
-                 >
-                   {example.name}
-                 </Link>
+              <Link
+                href={example.href}
+                key={example.href}
+                className={cn(
+                  "flex h-7 items-center justify-center rounded-full px-4 text-center text-sm transition-colors hover:text-primary",
+                  pathname === example.href
+                    ? "bg-muted font-medium text-primary"
+                    : "text-muted-foreground"
+                )}
+              >
+                {example.name}
+              </Link>
             ))}
           </div>
           <ScrollBar orientation="horizontal" className="invisible" />
         </ScrollArea>
       </div>
-      {children}
+      <div className="flex-1 overflow-auto pb-4">
+        {children}
+      </div>
     </div>
   );
 };

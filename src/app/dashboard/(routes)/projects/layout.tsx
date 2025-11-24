@@ -83,7 +83,9 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
               {renderProjects(false)}
             </div>
           </div>
-          <main className="w-full h-full overflow-hidden">{children}</main>
+          <main className="w-full h-full overflow-hidden">
+            {children}
+          </main>
         </div>
       </section>
     </div>

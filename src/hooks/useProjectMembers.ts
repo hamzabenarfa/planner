@@ -1,4 +1,4 @@
-import { getProjectMembers, addProjectMember, removeProjectMember } from "@/actions/project";
+import { getProjectMembers, removeMemberFromProject, assignMemberToProject } from "@/actions/project-member";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Toast from "react-hot-toast";
 
@@ -18,7 +18,7 @@ export const useAddProjectMember = () => {
   const { mutate, status, error } = useMutation({
     mutationKey: ["add-project-member"],
     mutationFn: ({ memberId, projectId }: { memberId: number; projectId: number }) =>
-      addProjectMember(memberId, projectId),
+      assignMemberToProject(projectId, memberId),
     onSuccess: () => {
       Toast.success("Member added successfully");
       queryClient.invalidateQueries({ queryKey: ["project-members"] });
@@ -34,7 +34,7 @@ export const useRemoveProjectMember = () => {
   const queryClient = useQueryClient();
   const { mutate, status, error } = useMutation({
     mutationKey: ["remove-project-member"],
-    mutationFn: (projectMemberId: number) => removeProjectMember(projectMemberId),
+    mutationFn: (projectMemberId: number) => removeMemberFromProject(projectMemberId),
     onSuccess: () => {
       Toast.success("Member removed successfully");
       queryClient.invalidateQueries({ queryKey: ["project-members"] });

@@ -10,7 +10,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useGetProjectMembers, useRemoveProjectMember } from "@/hooks/useProjectMembers";
-import { ProjectMembers } from "@/types/project.type";
 import { useParams } from "next/navigation";
 import AssignMember from "./_components/assign-member";
 
@@ -21,8 +20,8 @@ const TeamMembers = () => {
   );
   const { removeMember } = useRemoveProjectMember();
 
-  const handleRemoveMember = (teamId: number) => {
-    removeMember(teamId);
+  const handleRemoveMember = (projectMemberId: number) => {
+    removeMember(projectMemberId);
   };
 
   return (
@@ -30,7 +29,7 @@ const TeamMembers = () => {
       <nav className="flex justify-between items-center">
         <Input
           type="search"
-          placeholder="Search team members"
+          placeholder="Search members"
           className="h-8 w-[150px] lg:w-[250px]"
         />
         <AssignMember />
@@ -40,22 +39,28 @@ const TeamMembers = () => {
           <TableHeader className="bg-slate-100 ">
             <TableRow>
               <TableHead className="w-[100px]">Id</TableHead>
+              <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
+              <TableHead>Role</TableHead>
+              <TableHead>Level</TableHead>
               <TableHead className="text-center ">Action</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {projectMembersData &&
               Array.isArray(projectMembersData) &&
-              projectMembersData.map((team: any) => (
-                <TableRow key={team.id}>
-                  <TableCell className="font-medium">{team.id}</TableCell>
-                  <TableCell>{team.user.email}</TableCell>
+              projectMembersData.map((projectMember: any) => (
+                <TableRow key={projectMember.id}>
+                  <TableCell className="font-medium">{projectMember.member.id}</TableCell>
+                  <TableCell>{projectMember.member.name}</TableCell>
+                  <TableCell>{projectMember.member.email}</TableCell>
+                  <TableCell>{projectMember.member.role}</TableCell>
+                  <TableCell>{projectMember.member.level}</TableCell>
                   <TableCell className="text-center">
                     <Button
                       variant="destructive"
                       size="lg"
-                      onClick={() => handleRemoveMember(team.id)}
+                      onClick={() => handleRemoveMember(projectMember.id)}
                     >
                       Unassign{" "}
                     </Button>

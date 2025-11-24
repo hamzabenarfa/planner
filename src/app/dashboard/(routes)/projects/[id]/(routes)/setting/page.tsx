@@ -14,7 +14,7 @@ const Setting = () => {
   const projectIid = parseInt(param.id[0]);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 ">
       <ProjectNameSetting id={projectIid} />
 
       <SettingCard

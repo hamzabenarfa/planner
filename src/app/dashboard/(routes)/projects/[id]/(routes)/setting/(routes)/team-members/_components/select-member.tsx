@@ -17,7 +17,7 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
-import { useGetTeamMembers } from "@/hooks/userTeamMembers";
+import { useGetAvailableMembers } from "@/hooks/useMembers";
 import { useAddProjectMember } from "@/hooks/useProjectMembers";
 import { useParams } from "next/navigation";
 
@@ -27,7 +27,7 @@ const formSchema = z.object({
 const SelectMember = () => {
   const param = useParams();
 
-  const { teamMembersData } = useGetTeamMembers();
+  const { membersData } = useGetAvailableMembers();
   const { addMember } = useAddProjectMember();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -63,21 +63,21 @@ const SelectMember = () => {
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue>
-                      {(teamMembersData &&
-                        Array.isArray(teamMembersData) &&
-                        teamMembersData.find(
+                      {(membersData &&
+                        Array.isArray(membersData) &&
+                        membersData.find(
                           (member) => member.id == Number(field.value)
-                        )?.user.email) ||
-                        "Select email"}
+                        )?.name) ||
+                        "Select member"}
                     </SelectValue>
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {teamMembersData &&
-                    Array.isArray(teamMembersData) &&
-                    teamMembersData.map((member) => (
+                  {membersData &&
+                    Array.isArray(membersData) &&
+                    membersData.map((member) => (
                       <SelectItem key={member.id} value={member.id.toString()}>
-                        {member.user.email}
+                        {member.name} ({member.email})
                       </SelectItem>
                     ))}
                 </SelectContent>
