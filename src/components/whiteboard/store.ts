@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { nanoid } from 'nanoid';
 
-export type ToolType = 'selection' | 'rectangle' | 'ellipse' | 'arrow' | 'line' | 'pencil' | 'text';
+export type ToolType = 'selection' | 'rectangle' | 'ellipse' | 'arrow' | 'line' | 'pencil' | 'text' | 'hand';
 
 export interface WhiteboardElement {
   id: string;

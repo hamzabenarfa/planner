@@ -1,10 +1,11 @@
 import React from 'react';
 import { useWhiteboardStore, ToolType } from './store';
-import { MousePointer2, Square, Circle, ArrowRight, Minus, Pencil, Type } from 'lucide-react';
+import { MousePointer2, Square, Circle, ArrowRight, Minus, Pencil, Type, Hand } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const tools: { type: ToolType; icon: React.ElementType; label: string }[] = [
     { type: 'selection', icon: MousePointer2, label: 'Selection' },
+    { type: 'hand', icon: Hand, label: 'Hand (Pan)' },
     { type: 'rectangle', icon: Square, label: 'Rectangle' },
     { type: 'ellipse', icon: Circle, label: 'Ellipse' },
     { type: 'arrow', icon: ArrowRight, label: 'Arrow' },

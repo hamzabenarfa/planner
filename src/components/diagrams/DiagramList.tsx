@@ -38,26 +38,7 @@ const DiagramList: React.FC<DiagramListProps> = ({ projectId, diagrams }) => {
         setIsEditing(true);
     };
 
-    const handleCreateWhiteboard = async () => {
-        setIsCreatingWhiteboard(true);
-        const name = `Whiteboard ${new Date().toLocaleString()}`;
-        const content = JSON.stringify({ elements: [] });
-
-        try {
-            const result = await createDiagram(projectId, name, content);
-            if (result.success && result.data) {
-                toast.success("Whiteboard created");
-                router.push(`/dashboard/projects/${projectId}/diagrams/${result.data.id}`);
-            } else {
-                toast.error("Failed to create whiteboard");
-            }
-        } catch (error) {
-            console.error(error);
-            toast.error("Failed to create whiteboard");
-        } finally {
-            setIsCreatingWhiteboard(false);
-        }
-    };
+ 
 
     const handleEdit = (diagram: Diagram) => {
         if (diagram.content.trim().startsWith('{')) {
@@ -102,11 +83,9 @@ const DiagramList: React.FC<DiagramListProps> = ({ projectId, diagrams }) => {
                 <h2 className="text-2xl font-bold tracking-tight">Diagrams</h2>
                 <div className="flex gap-2">
                     <Button onClick={handleCreateMermaid} variant="outline">
-                        <Plus className="mr-2 h-4 w-4" /> New Mermaid
+                        <Plus className="mr-2 h-4 w-4" /> New Diagram
                     </Button>
-                    <Button onClick={handleCreateWhiteboard} disabled={isCreatingWhiteboard}>
-                        <Presentation className="mr-2 h-4 w-4" /> New Whiteboard
-                    </Button>
+              
                 </div>
             </div>
 
