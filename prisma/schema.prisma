@@ -74,11 +74,23 @@ model Project {
   ownerId        Int?
 
   kanban           Kanban?
+  board            Board?
   BurnDownSnapshot BurnDownSnapshot[]
   diagrams         Diagram[]
 
   @@unique([name, ownerId])
   @@map("projects")
+}
+
+model Board {
+  id        Int      @id @default(autoincrement())
+  content   String   @db.LongText
+  projectId Int      @unique
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("boards")
 }
 
 model TeamMember {

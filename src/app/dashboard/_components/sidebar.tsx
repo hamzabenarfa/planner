@@ -10,6 +10,7 @@ import {
   Users,
   LifeBuoy,
   LogOut,
+  Workflow,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -37,6 +38,11 @@ const routes = [
     label: "Members",
     icon: Users,
     href: "/dashboard/employees",
+  },
+  {
+    label: "Diagrams",
+    icon: Workflow,
+    href: "/dashboard/diagrams",
   },
 ];
 
