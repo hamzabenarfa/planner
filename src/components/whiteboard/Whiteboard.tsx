@@ -349,7 +349,7 @@ const Whiteboard: React.FC<WhiteboardProps> = ({ projectId, diagramId }) => {
         : tool === 'selection' ? 'cursor-default' : 'cursor-crosshair';
 
     return (
-        <div className="relative w-full h-screen overflow-hidden bg-gray-50 flex flex-col">
+        <div className="relative w-full h-screen overflow-hidden bg-white rounded-xl flex flex-col">
             <div 
                 ref={containerRef}
                 className={`flex-1 relative overflow-hidden ${cursorClass}`}
