@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
     DndContext, 
@@ -16,7 +17,7 @@ import {
     KeyboardSensor
 } from "@dnd-kit/core";
 import { format, addDays, startOfWeek, addHours, isToday } from "date-fns";
-import { Plus, Calendar, Lightbulb, CheckCircle2, MoreHorizontal, ArrowRight, Columns, Kanban, CalendarIcon } from "lucide-react";
+import { Plus, Calendar, Lightbulb, CheckCircle2, MoreHorizontal, ArrowRight, Kanban, CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // --- Types & Data ---
@@ -137,6 +138,7 @@ function DroppableKanbanColumn({ id, title, children }: { id: string; title: str
 // --- Main Demo Component ---
 
 export default function InteractiveDemo() {
+  const [mounted, setMounted] = useState(false);
   const [mode, setMode] = useState<DemoMode>("schedule");
   const [sparks, setSparks] = useState<Item[]>(INITIAL_SPARKS);
   const [tasks, setTasks] = useState<Item[]>(INITIAL_TASKS);
@@ -144,6 +146,10 @@ export default function InteractiveDemo() {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [activeItem, setActiveItem] = useState<Item | null>(null);
   const [hasInteracted, setHasInteracted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const sensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
@@ -169,7 +175,6 @@ export default function InteractiveDemo() {
     if (!over) return;
 
     const item = active.data.current as Item;
-    const overId = over.id as string;
     const overData = over.data.current;
 
     // Handle Calendar Drop
@@ -335,17 +340,20 @@ export default function InteractiveDemo() {
                     </div>
                 )}
 
-                <DragOverlay dropAnimation={{ duration: 250, easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)' }}>
-                    {activeItem ? (
-                        <div className={cn("p-3 rounded-lg border shadow-2xl text-sm font-medium bg-white scale-105 rotate-3 cursor-grabbing ring-2 ring-indigo-500/20 w-[200px]", activeItem.color)}>
-                            <div className="flex items-center gap-2">
-                                {activeItem.type === 'spark' && <Lightbulb className="w-3 h-3" />}
-                                {activeItem.type === 'task' && <CheckCircle2 className="w-3 h-3" />}
-                                {activeItem.title}
+                {mounted && createPortal(
+                    <DragOverlay dropAnimation={{ duration: 250, easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)' }} zIndex={9999}>
+                        {activeItem ? (
+                            <div className={cn("p-3 rounded-lg border shadow-2xl text-sm font-medium bg-white scale-105 rotate-3 cursor-grabbing ring-2 ring-indigo-500/20 w-[200px]", activeItem.color)}>
+                                <div className="flex items-center gap-2">
+                                    {activeItem.type === 'spark' && <Lightbulb className="w-3 h-3" />}
+                                    {activeItem.type === 'task' && <CheckCircle2 className="w-3 h-3" />}
+                                    {activeItem.title}
+                                </div>
                             </div>
-                        </div>
-                    ) : null}
-                </DragOverlay>
+                        ) : null}
+                    </DragOverlay>,
+                    document.body
+                )}
             </DndContext>
         </div>
     </div>
