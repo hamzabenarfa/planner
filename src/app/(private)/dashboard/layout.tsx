@@ -3,6 +3,8 @@ import { MobileSidebar } from "./_components/mobile-sidebar";
 import { Navbar } from "./_components/navbar";
 import { auth } from "@/auth";
 
+export const dynamic = "force-dynamic";
+
 export default async function PlannerLayout({
   children,
 }: Readonly<{
