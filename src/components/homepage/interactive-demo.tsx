@@ -17,7 +17,7 @@ import {
     KeyboardSensor
 } from "@dnd-kit/core";
 import { format, addDays, startOfWeek, addHours, isToday } from "date-fns";
-import { Plus, Calendar, Lightbulb, CheckCircle2, MoreHorizontal, ArrowRight, Kanban, CalendarIcon } from "lucide-react";
+import { Plus, Calendar, Lightbulb, CheckCircle2, MoreHorizontal, ArrowRight, Kanban, CalendarIcon, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // --- Types & Data ---
@@ -35,6 +35,19 @@ interface Item {
   duration?: number; // hours
 }
 
+const REALISTIC_TASKS = [
+    "Review Q3 Analytics", "Update User Persona", "Fix Navigation Bug", "Draft Newsletter", 
+    "Optimize Database", "Client Meeting Prep", "Design System Audit", "Competitor Analysis", 
+    "Update API Docs", "Team Sync Agenda", "Onboard New Hire", "Refactor Auth Flow", 
+    "Create Social Assets", "Weekly Report", "Budget Planning", "User Testing Script", 
+    "Fix Mobile Padding", "Deployment Checklist", "SEO Optimization", "Content Calendar", 
+    "Update Dependencies", "Code Review", "Customer Support", "Feature Spec", 
+    "Migration Plan", "Security Audit", "Performance Tuning", "Backup Verification", 
+    "Email Campaign", "Product Roadmap"
+];
+
+const getRandomTaskName = () => REALISTIC_TASKS[Math.floor(Math.random() * REALISTIC_TASKS.length)];
+
 const INITIAL_SPARKS: Item[] = [
   { id: "s1", title: "Launch Q4 Campaign", type: "spark", color: "bg-amber-50 border-amber-200 text-amber-900" },
   { id: "s2", title: "Client Review", type: "spark", color: "bg-purple-50 border-purple-200 text-purple-900" },
@@ -45,6 +58,7 @@ const INITIAL_TASKS: Item[] = [
   { id: "t1", title: "User Interview", type: "task", columnId: "todo", color: "bg-blue-50 border-blue-200 text-blue-900" },
   { id: "t2", title: "Fix API Bug", type: "task", columnId: "in-progress", color: "bg-red-50 border-red-200 text-red-900" },
   { id: "t3", title: "Design System", type: "task", columnId: "done", color: "bg-green-50 border-green-200 text-green-900" },
+  { id: "t4", title: "Research Competitors", type: "task", columnId: "backlog", color: "bg-slate-50 border-slate-200 text-slate-900" },
 ];
 
 const INITIAL_APPOINTMENTS: Item[] = [
@@ -119,16 +133,21 @@ function DroppableCalendarCell({ date, children, onDrop, isTarget }: { date: Dat
   );
 }
 
-function DroppableKanbanColumn({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
+function DroppableKanbanColumn({ id, title, children, onAdd }: { id: string; title: string; children: React.ReactNode; onAdd: () => void }) {
   const { setNodeRef, isOver } = useDroppable({
     id: `column-${id}`,
     data: { columnId: id, type: 'kanban-column' },
   });
 
   return (
-    <div ref={setNodeRef} className={cn("flex-1 bg-slate-50 rounded-lg p-2 flex flex-col transition-colors", isOver ? "bg-indigo-50/50 ring-2 ring-indigo-200" : "")}>
-        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-3 px-1">{title}</div>
-        <div className="flex-1 space-y-2">
+    <div ref={setNodeRef} className={cn("flex-1 bg-slate-50 rounded-lg p-2 flex flex-col transition-colors min-w-[140px]", isOver ? "bg-indigo-50/50 ring-2 ring-indigo-200" : "")}>
+        <div className="flex items-center justify-between mb-3 px-1">
+            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{title}</div>
+            <button onClick={onAdd} className="p-1 hover:bg-slate-200 rounded-full transition-colors">
+                <Plus className="w-3 h-3 text-slate-500" />
+            </button>
+        </div>
+        <div className="flex-1 space-y-2 overflow-y-auto">
             {children}
         </div>
     </div>
@@ -183,18 +202,26 @@ export default function InteractiveDemo() {
       
       if (item.type === "spark") {
         setSparks((prev) => prev.filter((s) => s.id !== item.id));
+        
+        const newAppointment: Item = {
+            ...item,
+            id: `apt-${Date.now()}`,
+            type: "appointment",
+            date: date,
+            duration: 1,
+            color: "bg-indigo-50 border-indigo-200 text-indigo-900"
+        };
+        setAppointments((prev) => [...prev, newAppointment]);
+
+      } else if (item.type === "appointment") {
+        // Move existing appointment
+        setAppointments((prev) => prev.map(apt => {
+            if (apt.id === item.id) {
+                return { ...apt, date: date };
+            }
+            return apt;
+        }));
       }
-      
-      const newAppointment: Item = {
-        ...item,
-        id: `apt-${Date.now()}`,
-        type: "appointment",
-        date: date,
-        duration: 1,
-        color: item.type === 'spark' ? "bg-indigo-50 border-indigo-200 text-indigo-900" : item.color
-      };
-      
-      setAppointments((prev) => [...prev, newAppointment]);
     }
     
     // Handle Kanban Drop
@@ -205,6 +232,34 @@ export default function InteractiveDemo() {
             setTasks(prev => prev.map(t => t.id === item.id ? { ...t, columnId } : t));
         }
     }
+  };
+
+  const handleAddSpark = () => {
+    const newSpark: Item = {
+        id: `s-${Date.now()}`,
+        title: getRandomTaskName(),
+        type: "spark",
+        color: "bg-yellow-50 border-yellow-200 text-yellow-900"
+    };
+    setSparks(prev => [newSpark, ...prev]);
+  };
+
+  const handleAddTask = (columnId: string) => {
+    const colorMap: Record<string, string> = {
+        'backlog': 'bg-slate-50 border-slate-200 text-slate-900',
+        'todo': 'bg-blue-50 border-blue-200 text-blue-900',
+        'in-progress': 'bg-red-50 border-red-200 text-red-900',
+        'done': 'bg-green-50 border-green-200 text-green-900'
+    };
+
+    const newTask: Item = {
+        id: `t-${Date.now()}`,
+        title: getRandomTaskName(),
+        type: "task",
+        columnId,
+        color: colorMap[columnId] || 'bg-white border-slate-200'
+    };
+    setTasks(prev => [newTask, ...prev]);
   };
 
   return (
@@ -264,9 +319,7 @@ export default function InteractiveDemo() {
                                     </h3>
                                     <p className="text-[10px] text-slate-400 font-medium">Capture Ideas</p>
                                 </div>
-                                <button className="p-1.5 hover:bg-slate-100 rounded-full transition-colors" onClick={() => {
-                                    setSparks(prev => [{ id: `s-${Date.now()}`, title: "New Idea", type: "spark", color: "bg-yellow-50 border-yellow-200 text-yellow-900" }, ...prev]);
-                                }}>
+                                <button className="p-1.5 hover:bg-slate-100 rounded-full transition-colors" onClick={handleAddSpark}>
                                 <Plus className="w-4 h-4 text-slate-400" />
                                 </button>
                             </div>
@@ -309,9 +362,11 @@ export default function InteractiveDemo() {
                                 {calendarDays.map((day, i) => (
                                     <DroppableCalendarCell key={i} date={day}>
                                     {appointments.filter((apt) => apt.date && format(apt.date, "yyyy-MM-dd") === format(day, "yyyy-MM-dd")).map((apt) => (
-                                        <div key={apt.id} className={cn("p-1.5 rounded text-[11px] font-medium leading-tight shadow-sm border border-transparent", apt.color)}>
-                                            {apt.title}
-                                        </div>
+                                        <DraggableItem 
+                                            key={apt.id} 
+                                            item={apt} 
+                                            className="p-1.5 text-[11px] leading-tight min-h-[auto] rounded shadow-sm border-transparent hover:scale-100 mb-1 last:mb-0" 
+                                        />
                                     ))}
                                     </DroppableCalendarCell>
                                 ))}
@@ -321,18 +376,23 @@ export default function InteractiveDemo() {
                     </div>
                 ) : (
                     // KANBAN MODE LAYOUT
-                    <div className="flex h-full p-6 gap-4 bg-slate-50/50">
-                         <DroppableKanbanColumn id="todo" title="To Do">
+                    <div className="flex h-full p-6 gap-3 bg-slate-50/50 overflow-x-auto">
+                         <DroppableKanbanColumn id="backlog" title="Backlog" onAdd={() => handleAddTask('backlog')}>
+                            {tasks.filter(t => t.columnId === 'backlog').map((task) => (
+                                <DraggableItem key={task.id} item={task} />
+                            ))}
+                         </DroppableKanbanColumn>
+                         <DroppableKanbanColumn id="todo" title="To Do" onAdd={() => handleAddTask('todo')}>
                             {tasks.filter(t => t.columnId === 'todo').map((task) => (
                                 <DraggableItem key={task.id} item={task} />
                             ))}
                          </DroppableKanbanColumn>
-                         <DroppableKanbanColumn id="in-progress" title="In Progress">
+                         <DroppableKanbanColumn id="in-progress" title="In Progress" onAdd={() => handleAddTask('in-progress')}>
                             {tasks.filter(t => t.columnId === 'in-progress').map((task) => (
                                 <DraggableItem key={task.id} item={task} />
                             ))}
                          </DroppableKanbanColumn>
-                         <DroppableKanbanColumn id="done" title="Done">
+                         <DroppableKanbanColumn id="done" title="Done" onAdd={() => handleAddTask('done')}>
                             {tasks.filter(t => t.columnId === 'done').map((task) => (
                                 <DraggableItem key={task.id} item={task} />
                             ))}
@@ -347,6 +407,7 @@ export default function InteractiveDemo() {
                                 <div className="flex items-center gap-2">
                                     {activeItem.type === 'spark' && <Lightbulb className="w-3 h-3" />}
                                     {activeItem.type === 'task' && <CheckCircle2 className="w-3 h-3" />}
+                                    {activeItem.type === 'appointment' && <CalendarIcon className="w-3 h-3" />}
                                     {activeItem.title}
                                 </div>
                             </div>

@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Clock, Zap, Users, CheckCircle2, Star, PlayCircle } from "lucide-react";
+import { ArrowRight, Clock, Zap, Users, CheckCircle2, Phone, Kanban, Workflow, Bot, PenTool } from "lucide-react";
 
 // Dynamically import the interactive demo (Client Component)
 const InteractiveDemo = dynamic(() => import("@/components/homepage/interactive-demo"), {
@@ -46,9 +46,9 @@ export default function Home() {
                     </Link>
                   </Button>
                   <Button size="lg" variant="outline" className="h-12 px-8 text-base font-semibold rounded-full border-slate-200 hover:bg-slate-50 text-slate-700 group" asChild>
-                    <Link href="#demo">
-                      <PlayCircle className="mr-2 h-5 w-5 text-slate-400 group-hover:text-primary transition-colors" />
-                      Watch 60-Second Demo
+                    <Link href="mailto:sales@projectplanner.com">
+                      <Phone className="mr-2 h-5 w-5 text-slate-400 group-hover:text-primary transition-colors" />
+                      Talk to Sales
                     </Link>
                   </Button>
                 </div>
@@ -66,10 +66,7 @@ export default function Home() {
                   <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/50 to-purple-50/50 -z-10" />
                   <InteractiveDemo />
                   
-                  {/* Hint Overlay for interaction */}
-                  <div className="absolute top-1 left-1/2 -translate-x-1/2 bg-slate-900/80 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-full pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-1000">
-                    Try dragging a task to the calendar
-                  </div>
+                 
                 </div>
                 
                 {/* Decorative BG elements */}
@@ -120,7 +117,7 @@ export default function Home() {
                 <ul className="space-y-3 text-slate-600">
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
-                    <span>Quick-capture "Sparks"</span>
+                    <span>Quick-capture &quot;Sparks&quot;</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
@@ -158,40 +155,49 @@ export default function Home() {
           </div>
         </section>
 
-        {/* SOCIAL PROOF */}
+        {/* ALL-IN-ONE PLATFORM */}
         <section className="py-20 border-y border-slate-100 bg-white overflow-hidden">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <h2 className="text-2xl font-bold text-slate-900">Trusted by modern teams</h2>
+              <h2 className="text-3xl font-bold text-slate-900 mb-4">Everything you need in one place</h2>
+              <p className="text-slate-600 text-lg">Powering your workflow from idea to execution.</p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-              <div className="bg-slate-50 p-6 rounded-xl border border-slate-100">
-                <div className="flex gap-1 mb-4">
-                  {[1, 2, 3, 4, 5].map((i) => <Star key={i} className="h-4 w-4 text-amber-400 fill-current" />)}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {/* Feature 1: Kanban */}
+              <div className="p-6 rounded-2xl bg-slate-50 border border-slate-100 hover:border-indigo-100 hover:bg-indigo-50/30 transition-colors group">
+                <div className="h-10 w-10 bg-white rounded-lg border border-slate-200 flex items-center justify-center mb-4 group-hover:border-indigo-200 group-hover:text-indigo-600 transition-colors">
+                  <Kanban className="h-5 w-5 text-slate-600 group-hover:text-indigo-600" />
                 </div>
-                <p className="text-slate-700 italic mb-4">"Reduced our weekly planning meetings by 70%. The integration between sparks and the calendar is a game changer."</p>
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 bg-slate-200 rounded-full flex items-center justify-center font-bold text-slate-500">JD</div>
-                  <div>
-                    <div className="font-semibold text-slate-900">Jane Doe</div>
-                    <div className="text-xs text-slate-500">Product Manager, TechFlow</div>
-                  </div>
-                </div>
+                <h3 className="font-bold text-slate-900 mb-2">Visual Boards</h3>
+                <p className="text-sm text-slate-600">Track progress with flexible Kanban boards. Drag, drop, and done.</p>
               </div>
 
-              <div className="bg-slate-50 p-6 rounded-xl border border-slate-100">
-                <div className="flex gap-1 mb-4">
-                  {[1, 2, 3, 4, 5].map((i) => <Star key={i} className="h-4 w-4 text-amber-400 fill-current" />)}
+              {/* Feature 2: Diagrams */}
+              <div className="p-6 rounded-2xl bg-slate-50 border border-slate-100 hover:border-indigo-100 hover:bg-indigo-50/30 transition-colors group">
+                <div className="h-10 w-10 bg-white rounded-lg border border-slate-200 flex items-center justify-center mb-4 group-hover:border-indigo-200 group-hover:text-indigo-600 transition-colors">
+                  <Workflow className="h-5 w-5 text-slate-600 group-hover:text-indigo-600" />
                 </div>
-                <p className="text-slate-700 italic mb-4">"Finally, a tool that works as fast as I do. No more switching between Notion and Google Calendar."</p>
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 bg-slate-200 rounded-full flex items-center justify-center font-bold text-slate-500">MS</div>
-                  <div>
-                    <div className="font-semibold text-slate-900">Mark Smith</div>
-                    <div className="text-xs text-slate-500">Engineering Lead, StartUp Inc</div>
-                  </div>
+                <h3 className="font-bold text-slate-900 mb-2">Diagrams</h3>
+                <p className="text-sm text-slate-600">Create flowcharts and system diagrams with code-like precision.</p>
+              </div>
+
+              {/* Feature 3: AI Assistant */}
+              <div className="p-6 rounded-2xl bg-slate-50 border border-slate-100 hover:border-indigo-100 hover:bg-indigo-50/30 transition-colors group">
+                <div className="h-10 w-10 bg-white rounded-lg border border-slate-200 flex items-center justify-center mb-4 group-hover:border-indigo-200 group-hover:text-indigo-600 transition-colors">
+                  <Bot className="h-5 w-5 text-slate-600 group-hover:text-indigo-600" />
                 </div>
+                <h3 className="font-bold text-slate-900 mb-2">AI Powered</h3>
+                <p className="text-sm text-slate-600">Generate tasks, summaries, and ideas with your intelligent assistant.</p>
+              </div>
+
+              {/* Feature 4: Whiteboards */}
+              <div className="p-6 rounded-2xl bg-slate-50 border border-slate-100 hover:border-indigo-100 hover:bg-indigo-50/30 transition-colors group">
+                <div className="h-10 w-10 bg-white rounded-lg border border-slate-200 flex items-center justify-center mb-4 group-hover:border-indigo-200 group-hover:text-indigo-600 transition-colors">
+                  <PenTool className="h-5 w-5 text-slate-600 group-hover:text-indigo-600" />
+                </div>
+                <h3 className="font-bold text-slate-900 mb-2">Whiteboards</h3>
+                <p className="text-sm text-slate-600">Brainstorm freely on an infinite canvas. Collaborate in real-time.</p>
               </div>
             </div>
           </div>
