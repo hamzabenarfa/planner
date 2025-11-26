@@ -1,5 +1,3 @@
-"use client";
-
 import { Bell, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -13,12 +11,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { User } from "next-auth";
+import { signOut } from "@/auth";
 
 interface NavbarProps {
   user?: User;
 }
 
-export const Navbar = ({ user }: NavbarProps) => {
+export const Navbar = async ({ user }: NavbarProps) => {
   return (
     <div className="flex items-center justify-between px-4 bg-transparent">
       {/* Search Bar */}
@@ -32,19 +31,28 @@ export const Navbar = ({ user }: NavbarProps) => {
 
       {/* Right Actions */}
       <div className="flex items-center gap-x-4">
-        <Button variant="ghost" size="icon" className="bg-white rounded-full shadow-sm h-10 w-10 hover:bg-slate-50">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="bg-white rounded-full shadow-sm h-10 w-10 hover:bg-slate-50"
+        >
           <Bell className="h-5 w-5 text-slate-600" />
         </Button>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="bg-white rounded-full shadow-sm pl-2 pr-4 py-6 hover:bg-slate-50 gap-3">
+            <Button
+              variant="ghost"
+              className="bg-white rounded-full shadow-sm pl-2 pr-4 py-6 hover:bg-slate-50 gap-3"
+            >
               <Avatar className="h-8 w-8">
                 <AvatarImage src={user?.image || ""} />
                 <AvatarFallback>{user?.name?.charAt(0) || "U"}</AvatarFallback>
               </Avatar>
               <div className="flex flex-col items-start text-sm">
-                <span className="font-semibold text-slate-700">{user?.name || "User"}</span>
+                <span className="font-semibold text-slate-700">
+                  {user?.name || "User"}
+                </span>
               </div>
               <svg
                 width="10"
@@ -68,8 +76,23 @@ export const Navbar = ({ user }: NavbarProps) => {
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Settings</DropdownMenuItem>
-            <DropdownMenuItem>Logout</DropdownMenuItem>
+            <DropdownMenuItem>Settings</DropdownMenuItem>{" "}
+            <form
+              action={async () => {
+                "use server";
+                await signOut({ redirectTo: "/" });
+              }}
+            >
+              <DropdownMenuItem asChild>
+                <Button
+                  variant="ghost"
+                  type="submit"
+                  className="text-slate-600 hover:text-slate-900 font-medium"
+                >
+                  Log out
+                </Button>
+              </DropdownMenuItem>
+            </form>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

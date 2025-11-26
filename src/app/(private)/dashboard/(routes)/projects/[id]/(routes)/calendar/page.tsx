@@ -15,6 +15,7 @@ const CalendarPage = () => {
 
     // Flatten all tasks from all columns
     const allTasks = kanbanData?.columns?.flatMap((column) =>
+        // @ts-ignore
         column.tasks.map((task) => ({
             ...task,
             status: column.name,

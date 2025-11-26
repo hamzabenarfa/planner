@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/table";
 import { useGetProjectMembers, useRemoveProjectMember } from "@/hooks/useProjectMembers";
 import { useParams } from "next/navigation";
-import AssignMember from "./_components/assign-member";
+import AssignMember from "./assign-member";
 
 const TeamMembers = () => {
   const param = useParams();

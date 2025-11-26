@@ -1,5 +1,4 @@
 "use client";
-import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -18,25 +17,18 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
-import api from "@/lib/axios-instance";
-import { User } from "@/types/user.type";
+import { useGetAvailableMembers } from "@/hooks/useMembers";
+import { useAddProjectMember } from "@/hooks/useProjectMembers";
+import { useParams } from "next/navigation";
+
 const formSchema = z.object({
   memberId: z.string().optional(),
 });
-const SelectForm = () => {
-  const [members, setMembers] = useState<User[]>([]);
-  useEffect(() => {
-    const fetchMembers = async () => {
-      try {
-        const response = await api<User[]>({ url: "/user/all-exept-me" });
-        setMembers(response.data);
-      } catch (error) {
-        console.error("Error fetching members:", error);
-      }
-    };
+const SelectMember = () => {
+  const param = useParams();
 
-    fetchMembers();
-  }, []);
+  const { membersData } = useGetAvailableMembers();
+  const { addMember } = useAddProjectMember();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -45,13 +37,11 @@ const SelectForm = () => {
     },
   });
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    try {
-      const result = await api({
-        url: `/team-members/add-existing-member/${data.memberId}`,
-        method: "POST",
+    if (data.memberId) {
+      addMember({
+        memberId: parseInt(data.memberId),
+        projectId: parseInt(param.id[0]),
       });
-    } catch (error: any) {
-      console.error("Unexpected error:", error.response.data);
     }
   };
 
@@ -73,17 +63,23 @@ const SelectForm = () => {
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue>
-                      {members.find((member) => member.id == field.value)
-                        ?.email || "Select email"}
+                      {(membersData &&
+                        Array.isArray(membersData) &&
+                        membersData.find(
+                          (member) => member.id == Number(field.value)
+                        )?.name) ||
+                        "Select member"}
                     </SelectValue>
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {members.map((member) => (
-                    <SelectItem key={member.id} value={member.id.toString()}>
-                      {member.email}
-                    </SelectItem>
-                  ))}
+                  {membersData &&
+                    Array.isArray(membersData) &&
+                    membersData.map((member) => (
+                      <SelectItem key={member.id} value={member.id.toString()}>
+                        {member.name} ({member.email})
+                      </SelectItem>
+                    ))}
                 </SelectContent>
               </Select>
             </FormItem>
@@ -98,4 +94,4 @@ const SelectForm = () => {
   );
 };
 
-export default SelectForm;
+export default SelectMember;

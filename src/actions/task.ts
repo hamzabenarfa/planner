@@ -1,6 +1,5 @@
 "use server";
 import prisma from "@/lib/prisma";
-import { CreateTaskDto } from "@/types/task.type"; // Need to ensure this type exists or use any
 
 async function updateKanbanTotalTasks(kanbanId: number, change: 'increment' | 'decrement') {
   await prisma.kanban.update({

@@ -266,7 +266,7 @@ export default function InteractiveDemo() {
     <div className="flex flex-col-reverse gap-4 w-full h-full ">
         {/* Mode Switcher Tabs */}
         <div className="flex justify-center">
-            <div className="bg-slate-100 p-1 rounded-full inline-flex">
+            <div className=" bg-white/80 backdrop-blur-md p-1 rounded-full inline-flex">
                 <button
                     onClick={() => setMode("schedule")}
                     className={cn(
@@ -288,7 +288,7 @@ export default function InteractiveDemo() {
             </div>
         </div>
 
-        <div className=" rounded-xl overflow-hidden border border-slate-200 shadow-2xl text-slate-800 font-sans hero-demo select-none relative group h-[400px]">
+        <div className=" rounded-xl overflow-hidden border border-slate-200 text-slate-800 font-sans hero-demo select-none relative group h-[400px]">
             <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
                 
                 {/* GUIDANCE OVERLAY */}

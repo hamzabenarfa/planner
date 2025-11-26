@@ -88,11 +88,15 @@ export function CreateTaskModal({ projectId }: CreateTaskModalProps) {
             />
           </div>
         </div>
-        <DialogFooter>
-          <Button type="submit" className="w-full" onClick={handleSubmit}>
-            Save changes
-          </Button>
-        </DialogFooter>
+        <form
+          onSubmit={handleSubmit}
+        >
+          <DialogFooter>
+            <Button type="submit" className="w-full">
+              Save changes
+            </Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );

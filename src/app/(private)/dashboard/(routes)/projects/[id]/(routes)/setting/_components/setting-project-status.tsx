@@ -31,6 +31,7 @@ const ProjectStatusSetting = ({ id }: { id: number }) => {
   const [currentProjectStatus, setCurrentProjectStatus] = useState<string>("");
   useEffect(() => {
     if (!isLoading && projectData && currentProjectStatus === "") {
+      // @ts-ignore
       setCurrentProjectStatus(projectData.data);
     }
   }, [projectData, isLoading, currentProjectStatus]);

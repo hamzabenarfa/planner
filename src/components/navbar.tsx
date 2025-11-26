@@ -8,8 +8,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { auth } from "@/auth";
 
-const Navbar = () => {
+const Navbar = async () => {
+  const session = await auth();
+
   return (
     <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-100 transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -40,12 +43,23 @@ const Navbar = () => {
 
             <div className="h-6 w-px bg-slate-200 hidden sm:block"></div>
 
-            <Button asChild variant="ghost" className="hidden sm:inline-flex text-slate-600 hover:text-slate-900 font-medium">
-                <Link href="/login">Log in</Link>
-            </Button>
-            <Button asChild className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-full px-6 shadow-sm hover:shadow transition-all">
-                <Link href="/register">Get Started</Link>
-            </Button>
+            {session ? (
+                <>
+                    <Button asChild variant="outline" className=" rounded-full hidden sm:inline-flex text-slate-600 hover:text-slate-900 font-medium">
+                        <Link href="/dashboard">My Account</Link>
+                    </Button>
+                   
+                </>
+            ) : (
+                <>
+                    <Button asChild variant="ghost" className="hidden sm:inline-flex text-slate-600 hover:text-slate-900 font-medium">
+                        <Link href="/login">Log in</Link>
+                    </Button>
+                    <Button asChild className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-full px-6 shadow-sm hover:shadow transition-all">
+                        <Link href="/register">Get Started</Link>
+                    </Button>
+                </>
+            )}
         </div>
       </div>
     </nav>
