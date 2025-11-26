@@ -293,7 +293,7 @@ export default function CalendarPage() {
                     <AlertDialogHeader>
                         <AlertDialogTitle>Delete Appointment</AlertDialogTitle>
                         <AlertDialogDescription>
-                            Are you sure you want to delete "{appointmentToDelete?.title}"? This action
+                            Are you sure you want to delete &quot;{appointmentToDelete?.title}&quot;? This action
                             cannot be undone.
                         </AlertDialogDescription>
                     </AlertDialogHeader>

@@ -7,7 +7,7 @@ import MermaidEditor from "./MermaidEditor";
 import MermaidPreview from "./MermaidPreview";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { deleteDiagram, renameDiagram, createDiagram } from "@/actions/diagrams";
+import { deleteDiagram } from "@/actions/diagrams";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, FileText, Presentation } from "lucide-react";
 import {
@@ -38,7 +38,7 @@ const DiagramList: React.FC<DiagramListProps> = ({ projectId, diagrams }) => {
         setIsEditing(true);
     };
 
- 
+
 
     const handleEdit = (diagram: Diagram) => {
         if (diagram.content.trim().startsWith('{')) {
@@ -85,7 +85,7 @@ const DiagramList: React.FC<DiagramListProps> = ({ projectId, diagrams }) => {
                     <Button onClick={handleCreateMermaid} variant="outline">
                         <Plus className="mr-2 h-4 w-4" /> New Diagram
                     </Button>
-              
+
                 </div>
             </div>
 
@@ -133,7 +133,7 @@ const DiagramList: React.FC<DiagramListProps> = ({ projectId, diagrams }) => {
                                                 <AlertDialogHeader>
                                                     <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                                                     <AlertDialogDescription>
-                                                        This action cannot be undone. This will permanently delete the diagram "{diagram.name}".
+                                                        This action cannot be undone. This will permanently delete the diagram {diagram.name}.
                                                     </AlertDialogDescription>
                                                 </AlertDialogHeader>
                                                 <AlertDialogFooter>
