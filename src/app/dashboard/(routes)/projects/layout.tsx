@@ -1,27 +1,19 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
-import { Layers, Pin, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import ProjectCard from "./_components/project-card";
 import { Button } from "@/components/ui/button";
 import {
-  useDeleteProject,
   useGetAllMyProject,
-  usePinProject,
 } from "@/hooks/useProject";
 import ProjectSkeleton from "./_components/ProjectSkeleton";
 import { useEffect, useState } from "react";
-import { Id } from "@/types/kanban.type";
 import { ProjectType } from "@/types/project.type";
-import Toast from "react-hot-toast";
 import { CreateNewProjectModal } from "./_components/new-project-modal";
-import { Separator } from "@/components/ui/separator";
 
 const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
-  const { projectData, isLoading, error } = useGetAllMyProject();
+  const { projectData, isLoading } = useGetAllMyProject();
   const [projects, setProjects] = useState<ProjectType[]>([]);
-  const { deleteProject } = useDeleteProject();
-  const { pinProject } = usePinProject();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   useEffect(() => {
@@ -30,21 +22,6 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
     }
   }, [projectData]);
 
-  const handleDelete = (id: Id) => {
-    deleteProject(id, {
-      onSuccess: () => {
-        Toast.success("Project deleted successfully");
-        setProjects((prevProjects) =>
-          Array.isArray(prevProjects)
-            ? prevProjects.filter((project) => project.id !== id)
-            : []
-        );
-      },
-      onError: (error) => {
-        console.error("Failed to delete project:", error);
-      },
-    });
-  };
 
   if (isLoading) { return <ProjectSkeleton /> }
 
@@ -57,19 +34,19 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
       });
 
       return sortedProjects.map((project) => (
-          <ProjectCard
-            id={project.id}
-            key={project.id}
-            pinned={project.pinned}
-            name={project.name}
-            status={project.status}
-            completedTasks={project.completedTasks}
-            totalTasks={project.totalTasks}
-            progress={project.progress}
-            updatedAt={project.updatedAt}
-            compact={true}
-          />
-        ));
+        <ProjectCard
+          id={project.id}
+          key={project.id}
+          pinned={project.pinned}
+          name={project.name}
+          status={project.status}
+          completedTasks={project.completedTasks}
+          totalTasks={project.totalTasks}
+          progress={project.progress}
+          updatedAt={project.updatedAt}
+          compact={true}
+        />
+      ));
     }
     return null;
   };
@@ -92,13 +69,12 @@ const ProjectLayout = ({ children }: { children: React.ReactNode }) => {
         </div>
         <div className="flex flex-row h-full overflow-hidden">
           <div
-            className={`flex flex-col gap-2 bg-white h-full overflow-hidden transition-all duration-300 ease-in-out rounded-xl ${
-              isSidebarOpen
-                ? "w-full max-w-xs p-2 opacity-100 mr-3"
-                : "w-0 p-0 opacity-0 mr-0"
-            }`}
+            className={`flex flex-col gap-2 bg-white h-full overflow-hidden transition-all duration-300 ease-in-out rounded-xl ${isSidebarOpen
+              ? "w-full max-w-xs p-2 opacity-100 mr-3"
+              : "w-0 p-0 opacity-0 mr-0"
+              }`}
           >
-           
+
             <div className="flex flex-col gap-2 overflow-y-auto h-full">
               {renderProjects()}
             </div>

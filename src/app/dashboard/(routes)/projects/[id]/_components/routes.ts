@@ -1,4 +1,4 @@
-import { Layout, Kanban, Settings, Bolt} from "lucide-react";
+import {  Kanban,  Bolt} from "lucide-react";
 
 export const routes = [
  

@@ -13,6 +13,23 @@ enum Role {
   MANAGER
 }
 
+enum AppointmentPriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum AppointmentCategory {
+  WORK
+  PERSONAL
+  MEETING
+  CLIENT
+  PLANNING
+  CODING
+  OTHER
+}
+
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
@@ -33,6 +50,8 @@ model User {
   projectMembers ProjectMember[]
   Project        Project[]
   members        Member[]        @relation("ManagedMembers")
+  appointments   Appointment[]
+  sparks         Spark[]
 
   @@map("users")
 }
@@ -274,4 +293,66 @@ model Diagram {
 
   @@unique([name, projectId])
   @@map("diagrams")
+}
+
+model Appointment {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?  @db.Text
+  startTime   DateTime
+  endTime     DateTime
+  location    String?
+  meetingLink String?
+  timeZone    String   @default("UTC")
+
+  priority AppointmentPriority @default(MEDIUM)
+  category AppointmentCategory @default(OTHER)
+
+  // Recurring event support
+  isRecurring       Boolean   @default(false)
+  recurrenceRule    String? // RRULE format (e.g., "FREQ=WEEKLY;BYDAY=MO,WE,FR")
+  recurrenceEndDate DateTime?
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  reminders Reminder[]
+  sparks    Spark[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("appointments")
+}
+
+model Reminder {
+  id               Int     @id @default(autoincrement())
+  minutesBefore    Int // e.g., 15, 30, 60
+  notificationSent Boolean @default(false)
+
+  appointmentId Int
+  appointment   Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("reminders")
+}
+
+model Spark {
+  id       Int     @id @default(autoincrement())
+  content  String  @db.Text
+  category String? // e.g., "startup", "feature", "idea"
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Optional link to appointment where idea was captured
+  linkedAppointmentId Int?
+  linkedAppointment   Appointment? @relation(fields: [linkedAppointmentId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("sparks")
 }
