@@ -1,5 +1,6 @@
 "use server";
-import prisma from "@/lib/prisma";
+import { prismaClientGlobal as prisma } from "@/lib/prisma";
+
 import { Status, ColumnType } from "@prisma/client";
 import { authenticatedUser } from "./utils";
 

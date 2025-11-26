@@ -1,7 +1,8 @@
 "use server";
 
 import { auth } from "@/auth";
-import prisma from "@/lib/prisma";
+import { prismaClientGlobal as prisma } from "@/lib/prisma";
+
 import { Project, Status, Task, ColumnType } from "@prisma/client";
 
 export async function getDashboardStats() {

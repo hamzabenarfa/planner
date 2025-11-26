@@ -1,5 +1,6 @@
 "use server";
-import prisma from "@/lib/prisma";
+import { prismaClientGlobal as prisma } from "@/lib/prisma";
+
 
 export async function getAllColumns(projectId: number) {
   const kanban = await prisma.kanban.findFirst({

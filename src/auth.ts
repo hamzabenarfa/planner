@@ -1,7 +1,8 @@
 import "server-only";
 import NextAuth from "next-auth"
 import { PrismaAdapter } from "@auth/prisma-adapter"
-import prisma from "@/lib/prisma"
+import { prismaClientGlobal as prisma } from "@/lib/prisma"
+
 import Credentials from "next-auth/providers/credentials"
 import Google from "next-auth/providers/google"
 import bcrypt from "bcryptjs"

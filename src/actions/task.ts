@@ -1,5 +1,6 @@
 "use server";
-import prisma from "@/lib/prisma";
+import { prismaClientGlobal as prisma } from "@/lib/prisma";
+
 
 async function updateKanbanTotalTasks(kanbanId: number, change: 'increment' | 'decrement') {
   await prisma.kanban.update({

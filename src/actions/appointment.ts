@@ -1,6 +1,7 @@
 "use server";
 
-import prisma from "@/lib/prisma";
+import { prismaClientGlobal as prisma } from "@/lib/prisma";
+
 import { AppointmentPriority, AppointmentCategory } from "@prisma/client";
 import { authenticatedUser } from "./utils";
 

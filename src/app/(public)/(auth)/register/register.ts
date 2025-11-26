@@ -1,5 +1,6 @@
 "use server";
-import prisma from "@/lib/prisma";
+import { prismaClientGlobal as prisma } from "@/lib/prisma";
+
 import bcrypt from "bcryptjs";
 import { Role } from "@prisma/client";
 

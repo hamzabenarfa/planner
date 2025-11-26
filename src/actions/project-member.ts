@@ -1,6 +1,7 @@
 "use server";
 
-import prisma from "@/lib/prisma";
+import { prismaClientGlobal as prisma } from "@/lib/prisma";
+
 import { authenticatedUser } from "./utils";
 
 export async function assignMemberToProject(projectId: number, memberId: number) {
